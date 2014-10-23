@@ -33,7 +33,7 @@ $( document ).ready(function() {
             });
             $("#add").click(function() {
                 $(this).autocomplete("search", $(this).val());
-            })
+            });
             // load courses added from cookies
             loadFromCookie();
         });
@@ -176,6 +176,8 @@ function addCourse(_code, sections) {
     // change color;
     color = (color+1)%10;
     $("#add").val(""); // clear input text
+    // update read mode url
+    getURL();
     return false; // always return false to avoid form submitting
 }
 // course: course object, section: section number, singleton: boolean
@@ -363,6 +365,8 @@ function removeCourse(code) {
     // save to cookies
     saveToCookie();
     compactTable();
+    // update read mode url
+    getURL();
 }
 function removeSection(code, section) {
     for (var i=0; i<timetable[code].length; ) {
@@ -477,8 +481,8 @@ function getCookie(cname) {
     var ca = document.cookie.split(';');
     for(var i=0; i<ca.length; i++) {
         var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1);
-        if (c.indexOf(name) != -1) return c.substring(name.length,c.length);
+        while (c.charAt(0)===' ') c = c.substring(1);
+        if (c.indexOf(name) !== -1) return c.substring(name.length,c.length);
     }
     return "";
 } 
@@ -495,7 +499,7 @@ function loadFromCookie() {
     }
     var res = timetableStr.split("!");
     for (var i=0; i<res.length; i++) {
-        if (res[i] == "") continue;
+        if (res[i] === "") continue;
         var rc = res[i].split("_");
         addCourse(rc[0], rc[1].split(","));
     }
@@ -523,9 +527,9 @@ function getURL() {
         }
         timetableStr += code + "_" + sectionStr + "!";
     }
-    var url = "http://antonytse.github.io/hkustCourser/index.html?timetable=" + timetableStr;
+    var url = "./index.html?timetable=" + timetableStr;
     $("#dialog").children().remove();
-    $("#dialog").append("<a href='"+url+"' target='_blank'>URL</a>")
+    $("#dialog").append("<a href='"+url+"' target='_blank'>[Read Mode URL]</a>");
 }
 
 function getURLParameter(sParam) {
@@ -533,7 +537,7 @@ function getURLParameter(sParam) {
     var sURLVariables = sPageURL.split('&');
     for (var i = 0; i < sURLVariables.length; i++) {
         var sParameterName = sURLVariables[i].split('=');
-        if (sParameterName[0] == sParam) {
+        if (sParameterName[0] === sParam) {
             return sParameterName[1];
         }
     }
